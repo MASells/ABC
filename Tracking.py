@@ -309,11 +309,11 @@ def main():
           continue
 
         elif not (sensed_object[0] or sensed_object[1]) and (sensed_object[4] or sensed_object[5]):
-          enc_move(True, 0, False, 100, 49, turn_time_search)
+          enc_move(False, 0, False, 100, 49, turn_time_search)
           continue
 
         elif (sensed_object[0] or sensed_object[1]) and not (sensed_object[4] or sensed_object[5]):
-          enc_move(False, 100, True, 0, 49, turn_time_search)
+          enc_move(False, 100, False, 0, 49, turn_time_search)
           continue
 
         elif (sensed_object[0] or sensed_object[1]) and (sensed_object[4] or sensed_object[5]):
