@@ -278,12 +278,18 @@ def main():
         sensed_object = [False,False,False,False,False,False,False]
 
         sensed_object[0] = FireSensor (safe_dist_search, pin1trigger, pin1echo)
+	time.sleep(0.00001)
         sensed_object[1] = FireSensor (safe_dist_search, pin2trigger, pin2echo)
-        sensed_object[2] = FireSensor (safe_dist_search, pin3trigger, pin3echo)
-        sensed_object[3] = FireSensor (safe_dist_search, pin4trigger, pin4echo)
-        sensed_object[4] = FireSensor (safe_dist_search, pin5trigger, pin5echo)
-        sensed_object[5] = FireSensor (safe_dist_search, pin6trigger, pin6echo)
-        sensed_object[6] = FireSensor (safe_dist_search, pin7trigger, pin7echo)
+        time.sleep(0.00001)
+	sensed_object[2] = FireSensor (safe_dist_search, pin3trigger, pin3echo)
+        time.sleep(0.00001)
+	sensed_object[3] = FireSensor (safe_dist_search, pin4trigger, pin4echo)
+        time.sleep(0.00001)
+	sensed_object[4] = FireSensor (safe_dist_search, pin5trigger, pin5echo)
+        time.sleep(0.00001)
+	sensed_object[5] = FireSensor (safe_dist_search, pin6trigger, pin6echo)
+        time.sleep(0.00001)
+	sensed_object[6] = FireSensor (safe_dist_search, pin7trigger, pin7echo)
         
         for x in xrange(6):
           if sensed_object[x]:
