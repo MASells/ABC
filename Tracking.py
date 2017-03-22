@@ -139,13 +139,13 @@ def TurnRobot (turnDir): #code for turning
   GPIO.output(RIGHT_DIR, False)
  
   if turnDir == 1: #turn right
-    enc_move(False, 100, True, 0, 49, 2)
+    enc_move(False, 100, True, 0, 49, 49, 2)
 
   elif turnDir == 2: #turn left
-    enc_move(True, 0, False, 100, 49, 2)
+    enc_move(True, 0, False, 100, 49, 49, 2)
   
   elif turnDir == 3:
-    enc_move(True, 0, True, 0, 36, 3)
+    enc_move(True, 0, True, 0, 36, 36, 2)
 
 ##########################################3
 
@@ -160,23 +160,23 @@ def collision_avoidance ():
   RobotTurned = False #set to true after turning
   TurnDir = 0
  
-  AboveThreshold = FireSensor (DistThres, GPIO_TRIGGER_3, GPIO_ECHO_3) #firing sensors front sensors to check
+  AboveThreshold = FireSensor (DistThres, pin3trigger, pin3echo) #firing sensors front sensors to check
   if AboveThreshold == False:
     time.sleep(0.00001) #time delay of 0.01ms so waves don't interfere 
-    AboveThreshold = FireSensor (DistThres, GPIO_TRIGGER_4, GPIO_ECHO_4)
+    AboveThreshold = FireSensor (DistThres, pin4trigger, pin4echo)
    
   if AboveThreshold == True:  #obj in front; need to turn
-    AboveThreshold = FireSensor (DistThresTurn, GPIO_TRIGGER_2, GPIO_ECHO_2) #check left
+    AboveThreshold = FireSensor (DistThresTurn, pin2trigger, pin2echo) #check left
     if AboveThreshold == False:
       TurnRobot(2) #turn left
       RobotTurned = True
     else: 
-      AboveThreshold = FireSensor (DistThresTurn, GPIO_TRIGGER_5, GPIO_ECHO_5) #check right
+      AboveThreshold = FireSensor (DistThresTurn, pin5trigger, pin5echo) #check right
       if AboveThreshold == False:
         TurnRobot(1) #turn right
         RobotTurned = True
       else: 
-        AboveThreshold = FireSensor (DistThresTurn, GPIO_TRIGGER_7, GPIO_ECHO_7) #check back
+        AboveThreshold = FireSensor (DistThresTurn, pin7trigger, pin7echo) #check back
         TurnRobot(3) #back up ***will try to back up if boxed in
         RobotTurned = True
     
@@ -184,7 +184,7 @@ def collision_avoidance ():
 
 ####################################################################
 
-def enc_move(l_dir, l_speed, r_dir, r_speed, count_max, time_max)
+def enc_move(l_dir, l_speed, r_dir, r_speed, count_max_l, count_max_r, time_max)
 
   #handles movements which run for a set distance using encoder feedback
 
@@ -203,17 +203,17 @@ def enc_move(l_dir, l_speed, r_dir, r_speed, count_max, time_max)
   PWM.start(LEFT_PWM, l_speed)
   PWM.start(RIGHT_PWM, r_speed)
 
-  while count_l < count_max and count_r < count_max and (stop - start) < time_max:
+  while count_l < count_max_l and count_r < count_max_r and (stop - start) < time_max:
     if GPIO.event_detected(L_ENC):
       count_l += 1
     if GPIO.event_detected(R_ENC):
       count_r += 1
     stop = time.time()
-    if count_l > count_max and not l_stop:
+    if count_l > count_max_l and not l_stop:
       GPIO.output(LEFT_DIR, GPIO.LOW) 
       PWM.set_duty_cycle(LEFT_PWM,0)
       l_stop = 1
-    if count_r > 23 and not r_stop:
+    if count_r > count_max_r and not r_stop:
       GPIO.output(RIGHT_DIR, GPIO.LOW)
       PWM.set_duty_cycle(RIGHT_PWM,0)
       r_stop = 1
@@ -301,39 +301,39 @@ def main():
 
         #if not move away from obstacle
         elif (sensed_object[2] or sensed_object[3]) and not sensed_object[6]:
-          enc_move(True, 0, True, 0, 36, avoid_time_search)
+          enc_move(True, 0, True, 0, 36, 36, avoid_time_search)
           continue
 
         elif not (sensed_object[2] or sensed_object[3]) and sensed_object[6]:
-          enc_move(False, 100, False, 100, 36, avoid_time_search)
+          enc_move(False, 100, False, 100, 36, 36, avoid_time_search)
           continue
 
         elif not (sensed_object[0] or sensed_object[1]) and (sensed_object[4] or sensed_object[5]):
-          enc_move(False, 0, False, 100, 49, turn_time_search)
+          enc_move(False, 0, False, 100, 0, 49, turn_time_search)
           continue
 
         elif (sensed_object[0] or sensed_object[1]) and not (sensed_object[4] or sensed_object[5]):
-          enc_move(False, 100, False, 0, 49, turn_time_search)
+          enc_move(False, 100, False, 0, 49, 0, turn_time_search)
           continue
 
         elif (sensed_object[0] or sensed_object[1]) and (sensed_object[4] or sensed_object[5]):
 
           if not (sensed_object[2] or sensed_object[3]):
-            enc_move(False, 100, False, 100, 36, avoid_time_search)
+            enc_move(False, 100, False, 100, 36, 36, avoid_time_search)
             continue
 
           elif not sensed_object[6]:
-            enc_move(True, 0, True, 0, 36, avoid_time_search)
+            enc_move(True, 0, True, 0, 36, 36, avoid_time_search)
             continue
 
         elif (sensed_object[2] or sensed_object[3]) and sensed_object[6]:
 
           if not (sensed_object[0] or sensed_object[1]):
-            enc_move(True, 0, False, 100, 49, turn_time_search)
+            enc_move(True, 0, False, 100, 49, 49, turn_time_search)
             continue
 
           elif not (sensed_object[4] or sensed_object[5]):
-            enc_move(False, 100, True, 0, 49, turn_time_search)
+            enc_move(False, 100, True, 0, 49, 49, turn_time_search)
             continue
 
     # Grab a block #
